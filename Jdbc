@@ -1,0 +1,419 @@
+Highlights of this training
+	ResultSet
+	ResultSet Type
+	ResultSet Navigation
+	MetaData
+	Transaction
+	Batch Processing
+	Connection Pooling
+	Isolation Levels
+
+The ResultSet Interface
+	• The ResultSet interface represents the result of a database select query with following features:
+	• The data in a ResultSet object is organized in rows & columns
+	• Each ResultSet object maintains a cursor (pointer) to identify the current data row
+	• The cursor of a newly created ResultSet object is positioned before the first row
+	• The next method moves the cursor to the next row, it returns false when there are no more rows in the ResultSet object
+	
+
+	• Types of ResultSet
+		• A ResultSet can be of a certain type. The type determines some characteristics and abilities of the ResultSet.
+		• By default, ResultSet object is not updatable and has a forward moving cursor only. Movement of the cursor depends on the scrollability of the ResultSet
+		
+	• Non-scrollable ResultSet
+		• Supports only forward movement only and it is default.
+	
+	• Scrollable ResultSet
+		• Supports the movement of the cursor in any direction.
+	
+	• Non-Updatable ResultSet
+		• Does not allows to update the ResultSet
+	
+	• Updatable ResultSet
+		• It allows to update the ResultSet
+		
+Scrollable ResultSet
+	• ResultSet interface has fields that determine whether ResultSet object will be scrollable or not and will it be sensitive to the changes to the data that is represented by ResultSet or not.
+	
+	• TYPE_FORWARD_ONLY
+		• The constant indicating the type for a ResultSet object whose cursor may move only forward.
+	
+	• TYPE_SCROLL_INSENSITIVE
+		• The constant indicating the type for a ResultSet object that is scrollable but generally not sensitive to changes to the data that underlies the ResultSet. If the data in the DB is another thread/process that change won’t be reflected in the data stored in the ResultSet.
+	
+	• TYPE_SCROLL_SENSITIVE
+		• The constant indicating the type for a ResultSet object that is scrollable and generally sensitive to changes to the data that underlies the ResultSet. If the data in the DB is changed another thread/process that change is reflected in the data stored in the ResultSet.
+		
+ResultSet Navigation Methods
+	• The ResultSet interface contains the various navigation methods. What methods works this depends on your database, JDBC driver, and the ResultSet type.
+	
+	• absolute():
+		• Moves the ResultSet to point at an absolute position. The position is a row number passed as parameter to the absolute() method.
+	
+	• first()
+		• Moves the ResultSet to point at the first row in the ResultSet.
+	
+	• last()
+		• Moves the ResultSet to point at the last row in the ResultSet.
+	
+	• next()
+		• Moves the ResultSet to point at the next row in the ResultSet.
+	
+	• previous()
+		• Moves the ResultSet to point at the previous row in the ResultSet.
+		
+Updatable ResultSet
+	• CONCUR_READ_ONLY
+		• The constant indicating the concurrency mode for a ResultSet object that may not be updated.
+	
+	• CONCUR_UPDATABLE
+		• The constant indicating the concurrency mode for a ResultSet object that may be updated.
+		
+ResultSet Methods
+	
+	• next() method:
+		• Moves the record pointer to the next record in the result set
+		• Returns a boolean value true / false, depending on whether there are records in the result set
+	
+	• getXXX() methods:
+		• Retrieve the values of individual column in the result set
+		• XXX stands for data type of the value being retrieved
+		• Two overloaded versions of each getXXX() method are provided:
+		• Accepting an integer argument indicating the column position
+		• Accepting a string argument indicating name of the column
+		
+	• Updater methods in ResultSet
+		• ResultSet provides various updater methods corresponding to the data types which are used. Using updater methods you can update the column values then update the row in the DB.
+		• Updater methods are used in conjunction with updateRow and insertRow methods.
+		
+JDBC MetaData
+		• JDBC MetaData
+			• It refers to data about database data such as , the information about tables, views, column types, column names, result sets, stored procedures, and databases.
+			• Java's JDBC metadata API provides the means to retrieve that information through Java code
+		
+		• Use of Metadata
+			• JDBC Metadata API can be used to retrieve the following information about the database:
+				• Database users, tables, views, stored procedures
+				• Database schema and catalog information
+				• Table, view, column privileges
+				• Information about primary key, foreign key of a table
+		
+		• JDBC Metadata API
+			• The JDBC API provides two key interfaces to retrieve metadata information:
+				• DatabaseMetaData
+				• ResultSetMetaData
+				
+DatabaseMetaData Interface
+	• DatabaseMetaData interface
+		• It provides methods to get meta data of a database such as database product name, database product version, driver name, name of total number of tables, name of total number of views etc.
+	
+	• Commonly used methods of DatabaseMetaData interface
+		• public String getDriverName()throws SQLException: it returns the name of the JDBC driver.
+		• public String getDriverVersion()throws SQLException: it returns the version number of the JDBC driver.
+		• public String getUserName()throws SQLException: it returns the username of the database.
+		• public String getDatabaseProductName()throws SQLException: it returns the product name of the database.
+		• public String getDatabaseProductVersion()throws SQLException: it returns the product version of the database.
+	
+	• How to get the object of DatabaseMetaData:
+		• The getMetaData() method of Connection interface returns the object of DatabaseMetaData. Syntax:
+		
+ResultSetMetadata Interface
+	• ResultSetMetaData.
+		• Is used to obtain information about SQL queries such as information about its size and column types.
+	
+	• How to get the object of ResultSetMetaData:
+		• The getMetaData() method of ResultSet interface returns the object of ResultSetMetaData.
+	
+	• Commonly used methods of ResultSetMetaData interface
+		• getMetaData() 
+			•Returns a ResultSetMetaData object containing details about the columns in a result set
+		
+		• getColumnName()
+			• Returns the name of a column by taking an integer argument indicating the position of the column within the result set
+		
+		• getColumnType()
+			• Returns the data type of a column
+		
+		• getColumnCount()
+			Returns the number of columns included in the result set
+			
+Introduction to Transaction
+	• What is Transaction?
+		• A transaction represents a group of operations, used to perform a task. If any one operation in the group is failed then the transaction is rollbacked.
+	
+	• Why Transaction Management?
+		• It preserve data integrity by grouping multiple statements to be executed as a single unit.
+		• If any statement failed to execute, the whole transaction is aborted and the database is rolled back to the previous state. This assures the data is kept consistence in the events of network problems software errors, etc.
+		
+Implementing Transaction Management
+	• Connection interface provides various method to support Transaction Management.
+		• setAutoCommit()
+		• commit()
+		• rollback()
+		• setSavepoint()
+		
+	• Let’s understand it in details
+	
+	• setAutoCommit() :
+		• By default, a new connection is in auto-commit mode. This means each SQL statement is treated as a transaction and is automatically committed right after it is executed.
+		• setAutoCommit(false) allows you disable the auto commit mode to enable two or more statements to be grouped into a transaction
+		
+	• commit()
+		• Commits a transaction if all subsequent SQL statements are included in the current transaction executes successfully.
+	
+	• rollback()
+		• Rollbacks a transaction if any SQL statement failed to execute, and a SQLException is thrown.
+		• Any changes made by the successful statements are discarded and the database is rolled back to the previous state before the transaction.
+		
+	• setSavepoint()
+		• This method is used to set a savepoint object within the current transaction.
+		
+SavePoint
+	• SavePoint
+		• It is an interface which is used to mark intermediate point within the current transaction. After setting a savepoint, the transaction can be rolled back to that savepoint without affecting preceding work.
+		
+		• When the save point is placed in the middle of the transaction, the logics placed before the save point will be committed and the logics placed after the save point will be rolled back
+		
+		• A SavePoint cannot be referenced from connection.commit (), but it can be referenced from connection.rollback ().
+		
+		• This means we cannot commit up to save point position, but we can roll back up to save point position.
+		
+	• Creating a Savepoint
+		Savepoint savepoint = connection.setSavepoint();
+	
+	• Releasing a Savepoint
+		Connection.releaseSavepoint()
+		
+		• This method takes a Savepoint object as a parameter and removes it from the current transaction.
+			
+Batch processing
+	• Batch processing
+		• Batch Processing allows you to group related SQL statements into a batch and submit them with one call to the database
+		• It reduces the amount of communication overhead and hence improves the performance.
+	
+	• JDBC Batch Processing Methods:
+		• addBatch(String query): It is used to add the statement to the batch.
+		
+		• executeBatch(): It is used to execute batch once all the queries are added to the batch.
+		
+		• clearBatch(): It is used to remove all statements from the batch.
+		
+	• Batch processing can be used with any of the following below interface
+		• Statement
+		
+		• PreparedStatement
+		
+		• CallableStatement
+	
+	• Sequence of steps to use Batch Processing −
+		• Create a Statement, PreparedStatement or CallableStatement object .
+		
+		• Set auto-commit to false using setAutoCommit().
+		
+		• Add as many as SQL statements you like into batch using addBatch() method on created statement object.
+		
+		• Execute all the SQL statements using executeBatch()method on created statement object.
+		
+		• Finally, commit all the changes using commit() method.
+		
+JDBC Connection Pooling
+	• What is Connection Pooling?
+		• Connection pooling is a well-known data access pattern.
+		
+		• It facilitates to create and maintain a collection of JDBC connection objects.
+		
+		• The primary objective of maintaining the pool of connection object is to leverage re-usability and improve the overall performance of the application.
+	
+	• Why Connection Pooling?
+		• Let's understand it by database connection life cycle.
+			• Opening a connection to the database using the database driver
+			
+			• Opening a TCP socket for reading/writing data
+			
+			• Reading / writing data over the socket
+			
+			• Closing the connection
+			
+			• Closing the socket
+			
+		• It becomes evident that database connections are fairly expensive operations.
+
+Implementing Connection Pooling
+	• DataSource interface in Java
+		• JDBC API provides an interface DataSource which is part of javax.sql package .
+		
+		• It allows us to create a connection object as well as provides support for connection pooling.
+	
+	• Method of DataSource Interface
+		• getConnection()
+		
+		• getConnection(String username, String password)
+	
+	• Both of these methods return a Connection object.
+
+	• DataSource Implementations
+		• There are various library provide by different vendors to implement connection pooling
+			• Apache Commons DBCP
+			
+			• c3p0
+			
+			• Apache DBCP
+			
+			• It provides a convenient way to implement connection pooling in stand alone Java programs.
+		
+		• You need the following jars in your project’s classpath
+			• commons-dbcp
+			
+			• commons-pool
+			
+			• JDBC driver
+		
+		• (Download path - https://commons.apache.org/proper/commons-dbcp/
+
+		• public class BasicDataSource
+			• It is implementation of javax.sql.DataSource. It provides a way to configure DataSource and mange the connection Pool.
+
+Common JDBC Components
+	• Common JDBC Components
+		• The JDBC API provides the following interfaces and classes:
+	
+	• DriverManager:
+		• This class manages a list of database drivers. Matches connection requests from the Java application with the proper database driver using communication protocol.
+	
+	• Driver:
+		• This interface handles the communications with the database server. It abstracts the details associated with working with Driver objects.
+	
+	• Connection:
+		• This interface provides all the methods for contacting a database. It represents communication context, i.e., all communication with database is performed through connection object only.
+	
+	• Statement:
+		• This interface allows you to submit the SQL statements to the database.
+	
+	• ResultSet:
+		• The object of ResultSet hold data retrieved from a database after you execute an SQL select query .It acts as an iterator to allow you to move through its data.
+	
+	• SQLException:
+		• This class handles any errors that occur in a database application
+		
+Steps in Using JDBC
+	• There are seven standard steps in querying databases:
+		• Load the JDBC driver.
+		• Define the connection URL.
+		• Establish the connection.
+		• Create a statement object.
+		• Execute a query or update.
+		• Process the results.
+		• Close the connection.
+		
+	• Register the JDBC driver:
+		• Requires that you initialize a driver so you can open a communication channel with the database.
+		• Use Class.forName static method to register the driver.
+			
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+			} 
+			catch(ClassNotFoundException cnfe) {
+				System.err.println("Error loading driver: " + cnfe);
+			}
+
+	• Define the connection URL.
+		• It specify the location of the database server. URLs referring to databases use the jdbc: protocol and have the server host, port, and database name (or reference) embedded within the URL.
+		
+			String oracleURL = "jdbc:oracle:thin:@ host :port :servicename”;
+
+	• Establish the connection.
+		• It requires using the DriverManager.getConnection() method to create a Connection object, which represents a physical connection with the database.
+	
+			Connection connection = DriverManager.getConnection(oracleURL, username, password);
+	
+	• Create a Statement
+		• A Statement object is used to send queries and commands to the database and is created from the Connection as follows:
+	
+			Statement statement = connection.createStatement()
+	
+	• Execute a Query
+		• Once you have a Statement object, you can use it to send SQL queries by using the executeQuery method, which returns an object of type ResultSet.
+	
+			String query = "SELECT col1, col2, col3 FROM sometable";
+			ResultSet resultSet = statement.executeQuery(query);
+	
+	• Process the results.
+		• It requires that you use the appropriate ResultSet.getXXX() method to retrieve the data from the result set.
+	
+	•Close the Connection
+		
+		connection.close();
+
+Transaction Property
+	• Atomicity
+		• Every transaction is an atomic operation. It means "follow all or nothing principle". For example, in a transfer of money operation-in a bank, if an amount is withdrawn from account 1 and it is deposited to account 2. Here either both operations are done or both are cancelled. So it is an atomic operation.
+	
+	• Consistency
+		• After the transaction is completed successfully or fails, the data left in the database, should be reliable.
+		• It means it ensures the correctness of a database.
+	
+	• Isolation
+		• This property ensures that multiple transactions can runs simultaneously in isolation without causing any inconsistency.
+		• Changes made by a transaction becomes visible to other transactions only after they are written in the memory.
+	
+	•Durability
+		• This property ensures that once the transaction has completed execution, the updates and modifications to the database are stored in and written to disk and they persist even if system failure occurs.
+
+Concurrency Problems in Database
+	• Concurrency Problems in Database
+		• When multiple transactions execute concurrently in an uncontrolled or unrestricted manner, then it might lead to several problems. Such problems are called as concurrency problems.
+		
+	• The concurrency problems are-
+		• Dirty Reads:
+			• It happens when a transaction reads some data that is being changed by another transaction which is not committed yet.
+		
+		• Non-Repeatable Reads:
+			• This happens when a transaction reads some records that another transaction is modifying. If the reader transaction tries the same query within the same transaction again, the result will be different compared to the first time.
+		
+		• Phantom Reads:
+			• Occur when we are reading a set of records with a specific WHERE clause and another operation inserts new records matching our WHERE clause. Our transaction has read the records without including the record being inserted.
+			
+Transaction Isolation Level
+	• JDBC Transaction Isolation Level
+		• Transaction isolation helps us to avoid concurrency related problem ,by determining whether the concurrently running transactions in a database can affect each other or not.
+		
+		• It resolves the problem such as dirty reads, non-repeatable reads and phantom reads that occurs during concurrent transactions.
+		
+	• There are five levels of transaction isolation defined by JDBC
+		• The list below shows these levels from the least restrictive to the most restrictive one.
+		
+		• JDBC_TRANSACTION_NONE:
+			• A constant indicating that JDBC driver does not support transactions.
+		
+		• TRANSACTION_READ_UNCOMMITTED:
+			• A constant indicating that dirty reads, non-repeatable reads and phantom reads can occur.
+			
+		• TRANSACTION_READ_COMMITTED (Default):
+			• A constant indicating that dirty reads are prevented; non-repeatable reads and phantom reads can occur.
+		
+		• TRANSACTION_REPEATABLE_READ:
+			• A constant indicating that dirty reads and non-repeatable reads are prevented; phantom reads can occur.
+		
+		• TRANSACTION_SERIALIZABLE:
+			• A constant indicating that dirty reads, non-repeatable reads and phantom reads are prevented.
+			
+		• All of these constants are of type int and exist in JDBC Connection interface and having integer value.
+			• TRANSACTION_NONE = 0
+			• TRANSACTION_READ_COMMITTED = 2
+			• TRANSACTION_READ_UNCOMMITTED = 1
+			• TRANSACTION_REPEATABLE_READ = 4
+			• TRANSACTION_SERIALIZABLE = 8
+			
+Applying Transaction Isolation Level
+	• The Connection interface contains getTransactionIsolationLevel() and setTransactionIsolationLevel() methods that help us to retrieve and set the value of the transaction isolation level for a database, respectively.
+	
+	• Below is the code snippet for getTransactionIsolationLevel() :
+		
+		Connection conObj = DriverManager.getConnection(“url”,”unm,””pwd”)
+		int transLevel = getTransactionIsolationLevel();
+	
+	• Below is the code snippet for setTransactionIsolationLevel() :
+		
+		Connection conObj = DriverManager.getConnection(“url”,”unm,””pwd”)
+		conObj.setTransactionIsolationLevel(TRANSACTION_SERIALIZABLE);
+			
